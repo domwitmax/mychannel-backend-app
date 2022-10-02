@@ -1,8 +1,8 @@
-﻿using application.Interfaces.Repository;
+﻿using Application.Interfaces.Repository;
 using Microsoft.AspNetCore.Mvc;
-using application.Models.Account;
+using Application.Models.Account;
 
-namespace web_api.Controllers
+namespace Web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

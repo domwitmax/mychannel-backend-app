@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace application.Models.Subscription
+namespace Application.Models.Subscription
 {
     public class SubscriptionDto
     {

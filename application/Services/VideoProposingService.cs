@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace application.Services
+namespace Application.Services
 {
     public class VideoProposingService: Interfaces.Services.IVideoProposingService
     {

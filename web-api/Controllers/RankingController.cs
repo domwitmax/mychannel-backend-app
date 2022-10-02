@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using application.Models.Video;
+using Application.Models.Video;
 
-namespace web_api.Controllers
+namespace Web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]/{videoId}")]

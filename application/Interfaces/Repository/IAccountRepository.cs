@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace application.Interfaces.Repository
+namespace Application.Interfaces.Repository
 {
     public interface IAccountRepository
     {

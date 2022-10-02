@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using application.Models.Setting;
+using Application.Models.Setting;
 
-namespace web_api.Controllers
+namespace Web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]/{userId}")]

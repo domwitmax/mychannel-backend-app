@@ -1,7 +1,7 @@
-using application.Interfaces.Services;
-using application.Interfaces.Repository;
-using application.Repository;
-using application.Services;
+using Application.Interfaces.Services;
+using Application.Interfaces.Repository;
+using Application.Repository;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

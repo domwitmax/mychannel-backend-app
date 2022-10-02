@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace application.Models.Comment
+namespace Application.Models.Comment
 {
     public class CommentDto
     {

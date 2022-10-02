@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using application.Interfaces.Services;
-using application.Models.Subscription;
+using Application.Interfaces.Services;
+using Application.Models.Subscription;
 
-namespace web_api.Controllers
+namespace Web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]/{userId}")]

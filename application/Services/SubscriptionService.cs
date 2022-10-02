@@ -1,6 +1,6 @@
-﻿using application.Models;
+﻿using Application.Models;
 
-namespace application.Services
+namespace Application.Services
 {
     public class SubscriptionService: Interfaces.Services.ISubscriptionService
     {

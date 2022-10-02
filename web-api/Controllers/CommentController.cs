@@ -1,7 +1,7 @@
-﻿using application.Models.Comment;
+﻿using Application.Models.Comment;
 using Microsoft.AspNetCore.Mvc;
 
-namespace web_api.Controllers
+namespace Web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

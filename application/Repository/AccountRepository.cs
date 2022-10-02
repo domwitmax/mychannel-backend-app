@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace application.Repository
+namespace Application.Repository
 {
-    public class AccountRepository: application.Interfaces.Repository.IAccountRepository
+    public class AccountRepository: Application.Interfaces.Repository.IAccountRepository
     {
     }
 }
