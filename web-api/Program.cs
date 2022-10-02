@@ -1,4 +1,6 @@
 using application.Interfaces.Services;
+using application.Interfaces.Repository;
+using application.Repository;
 using application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +11,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//Repository
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+//Services
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<IVideoInfoService, VideoInfoService>();
+builder.Services.AddScoped<IVideoProposingService, VideoProposingService>();
 
 builder.Services.AddCors(options =>
 {
