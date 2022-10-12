@@ -2,6 +2,10 @@ using Application.Interfaces.Services;
 using Application.Interfaces.Repository;
 using Application.Repository;
 using Application.Services;
+using AutoMapper;
+using Application.Models;
+using application.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +14,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddDbContext<MyChannelDbContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyChannel")));
 builder.Services.AddSwaggerGen();
+var config = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(new AutoMapperProfile());
+});
+var mapper = config.CreateMapper();
+builder.Services.AddSingleton(mapper);
 //Repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 //Services
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();

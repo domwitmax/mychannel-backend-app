@@ -1,4 +1,6 @@
-﻿using Application.Models.Comment;
+﻿using Application.Interfaces.Services;
+using Application.Models.Comment;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_api.Controllers
@@ -7,16 +9,27 @@ namespace Web_api.Controllers
     [Route("api/[controller]")]
     public class CommentController: ControllerBase
     {
+        private readonly ICommentService _commentService;
+        public CommentController(ICommentService commentService)
+        {
+            _commentService = commentService;
+        }
         [HttpGet("{videoId}")]
+        [ProducesResponseType(typeof(IEnumerable<CommentDto>),StatusCodes.Status200OK)]
         public IActionResult GetComments([FromRoute] int videoId)
         {
-            IEnumerable<CommentDto> comments = new List<CommentDto>();
+            IEnumerable<CommentDto> comments = _commentService.GetComments(videoId);
             return Ok(comments);
         }
         [HttpPost("{videoId}")]
-        public IActionResult AddComment([FromRoute] int videoId)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AddComment([FromRoute] int videoId, [FromBody] CommentDto commentDto)
         {
-            return Ok();
+            bool result = _commentService.AddComment(commentDto);
+            if (result)
+                return NoContent();
+            return BadRequest();
         }
     }
 }

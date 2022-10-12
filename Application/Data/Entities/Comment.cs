@@ -1,22 +1,19 @@
-﻿using Application.Data.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Models.Comment
+namespace Application.Data.Entities
 {
-    public class CommentDto
+    public class Comment
     {
         public int Id { get; set; }
         public int UserId { get; set; }
         public int VideoId { get; set; }
         public string Content { get; set; }
         public DateTime Created { get; set; }
-        public int LikedByUsers { get; set; }
-        public int DislikedByUsers { get; set; }
-        public bool? UserLiked { get; set; }
-        public User CreatedByUser { get; set; }
+
+        virtual public User CreatedByUser { get; set; }
     }
 }
