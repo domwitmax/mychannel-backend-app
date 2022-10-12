@@ -21,6 +21,7 @@ namespace Application.Repository
             try
             {
                 _channelDbContext.Comments.Add(comment);
+                _channelDbContext.SaveChanges();
             }
             catch
             {

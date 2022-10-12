@@ -14,6 +14,8 @@ namespace Application.Models
         {
             CreateMap<Data.Entities.Comment, CommentDto>();
             CreateMap<CommentDto, Data.Entities.Comment>();
+            CreateMap<CreatedCommentDto, Data.Entities.Comment>()
+                .ForMember(x => x.Created, p => p.MapFrom(src => DateTime.Now));
         }
     }
 }

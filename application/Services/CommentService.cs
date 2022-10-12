@@ -19,9 +19,10 @@ namespace Application.Services
             _commentRepository = commentRepository;
             _mapper = mapper;
         }
-        public bool AddComment(CommentDto commentDto)
+        public bool AddComment(int videoId, CreatedCommentDto commentDto)
         {
             Comment comment = _mapper.Map<Comment>(commentDto);
+            comment.VideoId = videoId;
             return _commentRepository.AddComment(comment);
         }
 

@@ -24,9 +24,9 @@ namespace Web_api.Controllers
         [HttpPost("{videoId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult AddComment([FromRoute] int videoId, [FromBody] CommentDto commentDto)
+        public IActionResult AddComment([FromRoute] int videoId, [FromBody] CreatedCommentDto commentDto)
         {
-            bool result = _commentService.AddComment(commentDto);
+            bool result = _commentService.AddComment(videoId, commentDto);
             if (result)
                 return NoContent();
             return BadRequest();

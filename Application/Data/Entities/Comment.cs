@@ -14,6 +14,6 @@ namespace Application.Data.Entities
         public string Content { get; set; }
         public DateTime Created { get; set; }
 
-        virtual public User CreatedByUser { get; set; }
+        //virtual public User CreatedByUser { get; set; }
     }
 }

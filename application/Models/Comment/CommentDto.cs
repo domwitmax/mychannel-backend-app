@@ -17,6 +17,5 @@ namespace Application.Models.Comment
         public int LikedByUsers { get; set; }
         public int DislikedByUsers { get; set; }
         public bool? UserLiked { get; set; }
-        public User CreatedByUser { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Application.Interfaces.Services
 {
     public interface ICommentService
     {
-        bool AddComment(CommentDto commentDto);
+        bool AddComment(int videoId, CreatedCommentDto commentDto);
         IEnumerable<CommentDto> GetComments(int videoId);
     }
 }

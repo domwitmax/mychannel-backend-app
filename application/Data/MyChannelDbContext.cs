@@ -10,9 +10,14 @@ namespace application.Data
 {
     public class MyChannelDbContext : DbContext
     {
+        public MyChannelDbContext() { }
         public MyChannelDbContext(DbContextOptions<MyChannelDbContext> contextOptions) : base(contextOptions) { }
-        public DbSet<Comment> Comments;
-
+        public DbSet<Comment> Comments { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlServer("server=(localdb)\\MSSQLLocalDB;Database=MyChannelDbContext;Trusted_Connection=True");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region Comment
