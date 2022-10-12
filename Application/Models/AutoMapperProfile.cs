@@ -1,4 +1,5 @@
 ﻿using Application.Models.Comment;
+using Application.Models.Setting;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,16 @@ namespace Application.Models
     {
         public AutoMapperProfile()
         {
+            #region Comment
             CreateMap<Data.Entities.Comment, CommentDto>();
             CreateMap<CommentDto, Data.Entities.Comment>();
             CreateMap<CreatedCommentDto, Data.Entities.Comment>()
                 .ForMember(x => x.Created, p => p.MapFrom(src => DateTime.Now));
+            #endregion
+            #region Setting
+            CreateMap<Data.Entities.Setting?, SettingDto?>();
+            CreateMap<SettingDto, Data.Entities.Setting>();
+            #endregion
         }
     }
 }

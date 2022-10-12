@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Models.Setting
+namespace Application.Data.Entities
 {
-    public class SettingDto
+    public class Setting
     {
+        public int UserId { get; set; }
         public bool DarkMode { get; set; }
     }
 }

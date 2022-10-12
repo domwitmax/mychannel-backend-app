@@ -1,23 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Models.Setting;
+using Application.Interfaces.Services;
 
 namespace Web_api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/{userId}")]
+    [Route("api/[controller]")]
     public class SettingController: ControllerBase
     {
-        [HttpGet]
+        private ISettingService _settingService;
+        public SettingController(ISettingService settingService)
+        {
+            _settingService = settingService;
+        }
+
+        [HttpGet("{userId}")]
+        [ProducesResponseType(typeof(SettingDto),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetSettings([FromRoute] int userId)
         {
-            SettingDto settingDto = new SettingDto();
+            SettingDto? settingDto = _settingService.GetSetting(userId);
+            if(settingDto == null)
+                return NotFound();
             return Ok(settingDto);
         }
-        [HttpPatch]
+        [HttpPatch("{userId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateSettings([FromRoute] int userId, [FromBody] SettingDto settingDto)
         {
-            SettingDto newSettingDto = new SettingDto();
-            return Ok(newSettingDto);
+            bool result = _settingService.UpdateSetting(userId, settingDto);
+            if (result)
+                return NoContent();
+            return BadRequest();
         }
     }
 }
