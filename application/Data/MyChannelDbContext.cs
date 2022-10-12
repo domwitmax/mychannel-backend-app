@@ -13,6 +13,7 @@ namespace application.Data
         public MyChannelDbContext() { }
         public MyChannelDbContext(DbContextOptions<MyChannelDbContext> contextOptions) : base(contextOptions) { }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Setting> Settings { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -35,6 +36,16 @@ namespace application.Data
                 .IsRequired();
             modelBuilder.Entity<Comment>()
                 .Property(x => x.Created)
+                .IsRequired();
+            #endregion
+            #region Setting
+            modelBuilder.Entity<Setting>().ToTable("Setting");
+            modelBuilder.Entity<Setting>().HasKey(x => x.UserId);
+            modelBuilder.Entity<Setting>()
+                .Property(x => x.UserId)
+                .ValueGeneratedNever();
+            modelBuilder.Entity<Setting>()
+                .Property(x => x.DarkMode)
                 .IsRequired();
             #endregion
         }

@@ -26,6 +26,7 @@ builder.Services.AddSingleton(mapper);
 //Repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 //Services
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
