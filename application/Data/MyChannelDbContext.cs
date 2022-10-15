@@ -14,6 +14,7 @@ namespace application.Data
         public MyChannelDbContext(DbContextOptions<MyChannelDbContext> contextOptions) : base(contextOptions) { }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Setting> Settings { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -46,6 +47,16 @@ namespace application.Data
                 .ValueGeneratedNever();
             modelBuilder.Entity<Setting>()
                 .Property(x => x.DarkMode)
+                .IsRequired();
+            #endregion
+            #region Subscription
+            modelBuilder.Entity<Subscription>().ToTable("Subscription");
+            modelBuilder.Entity<Subscription>().HasKey(x => x.Id);
+            modelBuilder.Entity<Subscription>()
+                .Property(x => x.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Subscription>()
+                .Property(x => x.SubscriptionUserId)
                 .IsRequired();
             #endregion
         }

@@ -1,5 +1,6 @@
 ﻿using Application.Models.Comment;
 using Application.Models.Setting;
+using Application.Models.Subscription;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,10 @@ namespace Application.Models
             #region Setting
             CreateMap<Data.Entities.Setting?, SettingDto?>();
             CreateMap<SettingDto, Data.Entities.Setting>();
+            #endregion
+            #region Subscription
+            CreateMap<SubscriptionDto, Data.Entities.Subscription>();
+            CreateMap<Data.Entities.Subscription, SubscriptionDto>();
             #endregion
         }
     }

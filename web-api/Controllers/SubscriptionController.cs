@@ -19,23 +19,38 @@ namespace Web_api.Controllers
             _subscriptionService = subscriptionService;
         }
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<SubscriptionDto>),StatusCodes.Status200OK)]
         public IActionResult GetSubscriptions([FromRoute] int userId)
         {
-            IEnumerable<SubscriptionDto> subscriptions = new List<SubscriptionDto>();
+            IEnumerable<SubscriptionDto> subscriptions = _subscriptionService.GetSubscriptions(userId);
             return Ok(subscriptions);
         }
         [HttpGet("Count")]
+        [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
         public IActionResult GetSubscriptionsCount([FromRoute] int userId)
         {
-            IEnumerable<SubscriptionDto> subscriptions = new List<SubscriptionDto>();
-            int count = subscriptions.Count();
+            int count = _subscriptionService.GetSubscriptionCount(userId);
             return Ok(count);
         }
-        [HttpPost()]
-        public IActionResult AddSubscription([FromRoute] int userId)
+        [HttpPost("AddSubsscription")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AddSubscription([FromRoute] int userId, [FromBody] SubscriptionDto subscriptionDto)
         {
-            SubscriptionDto subscription = new SubscriptionDto();
-            return Ok(subscription);
+            bool result = _subscriptionService.AddSubscription(subscriptionDto);
+            if (result)
+                return Ok();
+            return BadRequest();
+        }
+        [HttpPost("RemoveSubscription")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult RemoveSubscription([FromRoute] int userId, [FromBody] SubscriptionDto subscriptionDto)
+        {
+            bool result = _subscriptionService.RemoveSubscription(subscriptionDto);
+            if (result)
+                return Ok();
+            return BadRequest();
         }
     }
 }
