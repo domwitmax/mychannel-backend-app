@@ -1,6 +1,9 @@
 ﻿using Application.Interfaces.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Application.Models.Account;
+using Microsoft.AspNetCore.Authorization;
+using Application.Interfaces.Services;
+using System.Security.Claims;
 
 namespace Web_api.Controllers
 {
@@ -8,30 +11,53 @@ namespace Web_api.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private IAccountRepository _accountRepository;
-        public AccountController(IAccountRepository accountRepository)
+        private readonly IAccountService _accountService;
+        public AccountController(IAccountService accountService)
         {
-            _accountRepository = accountRepository;
+            _accountService = accountService;
         }
-        [HttpGet]
+        [HttpPost("Login")]
+        [ProducesResponseType(typeof(string),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Login([FromBody] LoginDto loginDto)
         {
-            return Ok("token");
+            string? jwt = _accountService.Login(loginDto);
+            if (jwt == null)
+                return BadRequest();
+            return Ok(jwt);
         }
-        [HttpPost]
+        [HttpPost("Register")]
+        [ProducesResponseType(typeof(string),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Register([FromBody] RegisterDto registerDto)
         {
-            return Ok("token");
+            string? jwt = _accountService.Register(registerDto);
+            if (jwt == null)
+                BadRequest();
+            return Ok(jwt);
         }
-        [HttpGet("{user}")]
-        public IActionResult GetUser([FromRoute] string user)
+        [HttpGet("GetUser/{userName}")]
+        [Authorize]
+        [ProducesResponseType(typeof(GetUserDto),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult GetUser(string userName)
         {
-            UserDto userDto = new UserDto();
+            GetUserDto? userDto = _accountService.GetUser(userName);
+            if(userDto == null)
+                return NotFound();
             return Ok(userDto);
         }
-        [HttpPatch("{user}")]
+        [HttpPatch("Update")]
+        [Authorize]
+        [ProducesResponseType(typeof(UpdateDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Update([FromBody] UpdateDto updateDto)
         {
+            UserDto? userDto = _accountService.Update(updateDto);
+            if (userDto == null)
+                return NotFound();
             return Ok(updateDto);
         }
     }

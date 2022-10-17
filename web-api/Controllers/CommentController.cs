@@ -1,11 +1,13 @@
 ﻿using Application.Interfaces.Services;
 using Application.Models.Comment;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class CommentController: ControllerBase
     {

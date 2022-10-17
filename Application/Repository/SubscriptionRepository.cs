@@ -18,7 +18,7 @@ namespace Application.Repository
         }
         public bool AddSubscription(Subscription subscription)
         {
-            Subscription? subscriptionFromDb = _context.Subscriptions.SingleOrDefault(x => x.UserId == subscription.UserId && x.SubscriptionUserId == subscription.SubscriptionUserId);
+            Subscription? subscriptionFromDb = _context.Subscriptions.SingleOrDefault(x => x.UserName == subscription.UserName && x.SubscriptionUserName == subscription.SubscriptionUserName);
             if (subscriptionFromDb != null)
                 return false;
             _context.Subscriptions.Add(subscription);
@@ -27,7 +27,7 @@ namespace Application.Repository
         }
         public bool RemoveSubscription(Subscription subscription)
         {
-            Subscription? subscriptionFromDb = _context.Subscriptions.SingleOrDefault(x => x.UserId == subscription.UserId && x.SubscriptionUserId == subscription.SubscriptionUserId);
+            Subscription? subscriptionFromDb = _context.Subscriptions.SingleOrDefault(x => x.UserName == subscription.UserName && x.SubscriptionUserName == subscription.SubscriptionUserName);
             if(subscriptionFromDb == null)
                 return false;
             subscription.Id = subscriptionFromDb.Id;
@@ -35,15 +35,15 @@ namespace Application.Repository
             _context.SaveChanges();
             return true;
         }
-        public int GetSubscriptionCount(int userId)
+        public int GetSubscriptionCount(string userName)
         {
-            int count = _context.Subscriptions.Count(x => x.UserId == userId);
+            int count = _context.Subscriptions.Count(x => x.SubscriptionUserName == userName);
             return count;
         }
 
-        public IEnumerable<Subscription> GetSubscriptions(int userId)
+        public IEnumerable<Subscription> GetSubscriptions(string userName)
         {
-            IEnumerable<Subscription> subscriptions = _context.Subscriptions.Where(x => x.UserId == userId);
+            IEnumerable<Subscription> subscriptions = _context.Subscriptions.Where(x => x.UserName == userName);
             return subscriptions;
         }
     }

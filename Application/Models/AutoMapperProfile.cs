@@ -1,4 +1,5 @@
-﻿using Application.Models.Comment;
+﻿using Application.Models.Account;
+using Application.Models.Comment;
 using Application.Models.Setting;
 using Application.Models.Subscription;
 using AutoMapper;
@@ -14,6 +15,15 @@ namespace Application.Models
     {
         public AutoMapperProfile()
         {
+            #region Account
+            CreateMap<Data.Entities.User?, UserDto?>();
+            CreateMap<Data.Entities.User, RegisterDto>();
+            CreateMap<RegisterDto, Data.Entities.User>()
+                .ForMember(dect => dect.Created, act => act.MapFrom(src => DateTime.Now));
+            CreateMap<Data.Entities.User, UpdateDto>();
+            CreateMap<UpdateDto, Data.Entities.User>();
+            CreateMap<Data.Entities.User, GetUserDto>();
+            #endregion
             #region Comment
             CreateMap<Data.Entities.Comment, CommentDto>();
             CreateMap<CommentDto, Data.Entities.Comment>();

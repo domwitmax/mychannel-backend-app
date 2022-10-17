@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Data.Entities
+namespace Application.Models.Account
 {
-    public class Subscription
+    public class GetUserDto
     {
         public int Id { get; set; }
         public string UserName { get; set; }
-        public string SubscriptionUserName { get; set; }
+        public string Email { get; set; }
     }
 }

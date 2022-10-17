@@ -6,37 +6,61 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Interfaces.Services;
 using Application.Models.Subscription;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Web_api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/{userId}")]
+    [Authorize]
+    [Route("api/[controller]")]
     public class SubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService _subscriptionService;
+        private int? getUserId()
+        {
+            string? userIdStr = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
+                return null;
+            return userId;
+        }
+        private string? getUserName()
+        {
+            string? userName = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            return userName;
+        }
         public SubscriptionController(ISubscriptionService subscriptionService)
         {
             _subscriptionService = subscriptionService;
         }
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<SubscriptionDto>),StatusCodes.Status200OK)]
-        public IActionResult GetSubscriptions([FromRoute] int userId)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult GetSubscriptions()
         {
-            IEnumerable<SubscriptionDto> subscriptions = _subscriptionService.GetSubscriptions(userId);
+            string? userName = getUserName();
+            if (userName == null)
+                return Unauthorized();
+            IEnumerable<SubscriptionDto> subscriptions = _subscriptionService.GetSubscriptions(userName);
             return Ok(subscriptions);
         }
-        [HttpGet("Count")]
+        [HttpGet("Count/{subscriptionUserName}")]
         [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
-        public IActionResult GetSubscriptionsCount([FromRoute] int userId)
+        public IActionResult GetSubscriptionsCount([FromRoute] string subscriptionUserName)
         {
-            int count = _subscriptionService.GetSubscriptionCount(userId);
+            int count = _subscriptionService.GetSubscriptionCount(subscriptionUserName);
             return Ok(count);
         }
         [HttpPost("AddSubsscription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult AddSubscription([FromRoute] int userId, [FromBody] SubscriptionDto subscriptionDto)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult AddSubscription([FromBody] SubscriptionDto subscriptionDto)
         {
+            if (getUserName() == null)
+                return Unauthorized();
+            if (getUserName() != subscriptionDto.UserName || subscriptionDto.UserName == subscriptionDto.SubscriptionUserName)
+                return BadRequest();
             bool result = _subscriptionService.AddSubscription(subscriptionDto);
             if (result)
                 return Ok();
@@ -45,8 +69,13 @@ namespace Web_api.Controllers
         [HttpPost("RemoveSubscription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult RemoveSubscription([FromRoute] int userId, [FromBody] SubscriptionDto subscriptionDto)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult RemoveSubscription([FromBody] SubscriptionDto subscriptionDto)
         {
+            if (getUserName() == null)
+                return Unauthorized();
+            if (getUserName() != subscriptionDto.UserName || subscriptionDto.UserName == subscriptionDto.SubscriptionUserName)
+                return BadRequest();
             bool result = _subscriptionService.RemoveSubscription(subscriptionDto);
             if (result)
                 return Ok();
