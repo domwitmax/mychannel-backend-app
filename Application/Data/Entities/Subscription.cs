@@ -9,7 +9,7 @@ namespace Application.Data.Entities
     public class Subscription
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int SubscriptionUserId { get; set; }
+        public string UserName { get; set; }
+        public string SubscriptionUserName { get; set; }
     }
 }

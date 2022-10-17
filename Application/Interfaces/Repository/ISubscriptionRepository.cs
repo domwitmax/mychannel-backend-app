@@ -11,7 +11,7 @@ namespace Application.Interfaces.Repository
     {
         bool AddSubscription(Subscription subscription);
         bool RemoveSubscription(Subscription subscription);
-        int GetSubscriptionCount(int userId);
-        IEnumerable<Subscription> GetSubscriptions(int userId);
+        int GetSubscriptionCount(string userName);
+        IEnumerable<Subscription> GetSubscriptions(string userName);
     }
 }

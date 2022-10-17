@@ -70,10 +70,10 @@ namespace application.Data
             modelBuilder.Entity<Subscription>().ToTable("Subscription");
             modelBuilder.Entity<Subscription>().HasKey(x => x.Id);
             modelBuilder.Entity<Subscription>()
-                .Property(x => x.UserId)
+                .Property(x => x.UserName)
                 .IsRequired();
             modelBuilder.Entity<Subscription>()
-                .Property(x => x.SubscriptionUserId)
+                .Property(x => x.SubscriptionUserName)
                 .IsRequired();
             #endregion
         }

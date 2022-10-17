@@ -24,6 +24,11 @@ namespace Web_api.Controllers
                 return null;
             return userId;
         }
+        private string? getUserName()
+        {
+            string? userName = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            return userName;
+        }
         public SubscriptionController(ISubscriptionService subscriptionService)
         {
             _subscriptionService = subscriptionService;
@@ -33,27 +38,29 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetSubscriptions()
         {
-            int? userId = getUserId();
-            if (userId == null)
+            string? userName = getUserName();
+            if (userName == null)
                 return Unauthorized();
-            IEnumerable<SubscriptionDto> subscriptions = _subscriptionService.GetSubscriptions(userId.Value);
+            IEnumerable<SubscriptionDto> subscriptions = _subscriptionService.GetSubscriptions(userName);
             return Ok(subscriptions);
         }
-        [HttpGet("Count")]
+        [HttpGet("Count/{subscriptionUserName}")]
         [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
-        public IActionResult GetSubscriptionsCount()
+        public IActionResult GetSubscriptionsCount([FromRoute] string subscriptionUserName)
         {
-            int? userId = getUserId();
-            if (userId == null)
-                return Unauthorized();
-            int count = _subscriptionService.GetSubscriptionCount(userId.Value);
+            int count = _subscriptionService.GetSubscriptionCount(subscriptionUserName);
             return Ok(count);
         }
         [HttpPost("AddSubsscription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult AddSubscription([FromBody] SubscriptionDto subscriptionDto)
         {
+            if (getUserName() == null)
+                return Unauthorized();
+            if (getUserName() != subscriptionDto.UserName || subscriptionDto.UserName == subscriptionDto.SubscriptionUserName)
+                return BadRequest();
             bool result = _subscriptionService.AddSubscription(subscriptionDto);
             if (result)
                 return Ok();
@@ -62,8 +69,13 @@ namespace Web_api.Controllers
         [HttpPost("RemoveSubscription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult RemoveSubscription([FromRoute] int userId, [FromBody] SubscriptionDto subscriptionDto)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult RemoveSubscription([FromBody] SubscriptionDto subscriptionDto)
         {
+            if (getUserName() == null)
+                return Unauthorized();
+            if (getUserName() != subscriptionDto.UserName || subscriptionDto.UserName == subscriptionDto.SubscriptionUserName)
+                return BadRequest();
             bool result = _subscriptionService.RemoveSubscription(subscriptionDto);
             if (result)
                 return Ok();

@@ -21,14 +21,14 @@ namespace Application.Services
             return _subscriptionRepository.AddSubscription(subscription);
         }
 
-        public int GetSubscriptionCount(int userId)
+        public int GetSubscriptionCount(string userName)
         {
-            return _subscriptionRepository.GetSubscriptionCount(userId);
+            return _subscriptionRepository.GetSubscriptionCount(userName);
         }
 
-        public IEnumerable<SubscriptionDto> GetSubscriptions(int userId)
+        public IEnumerable<SubscriptionDto> GetSubscriptions(string userName)
         {
-            IEnumerable<Subscription> subscriptions = _subscriptionRepository.GetSubscriptions(userId);
+            IEnumerable<Subscription> subscriptions = _subscriptionRepository.GetSubscriptions(userName);
             IEnumerable<SubscriptionDto> subscriptionDtos = subscriptions.Select(src => _mapper.Map<SubscriptionDto>(src));
             return subscriptionDtos;
         }

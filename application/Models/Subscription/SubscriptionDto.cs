@@ -8,7 +8,7 @@ namespace Application.Models.Subscription
 {
     public class SubscriptionDto
     {
-        public int UserId { get; set; }
-        public int SubscriptionUserId { get; set; }
+        public string UserName { get; set; }
+        public string SubscriptionUserName { get; set; }
     }
 }
