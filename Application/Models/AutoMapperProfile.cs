@@ -1,5 +1,6 @@
 ﻿using Application.Models.Account;
 using Application.Models.Comment;
+using Application.Models.History;
 using Application.Models.Setting;
 using Application.Models.Subscription;
 using Application.Models.Video;
@@ -43,6 +44,10 @@ namespace Application.Models
             CreateMap<VideoDto, Data.Entities.Video>();
             CreateMap<Data.Entities.Video, FullVideoDto>()
                 .ForMember(dect => dect.Created, act => act.MapFrom(src => DateTime.Now));
+            #endregion
+            #region VideoStatus
+            CreateMap<VideoStatusDto, Data.Entities.VideoStatus>();
+            CreateMap<Data.Entities.VideoStatus, VideoStatusDto>();
             #endregion
         }
     }
