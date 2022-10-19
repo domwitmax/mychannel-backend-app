@@ -16,6 +16,7 @@ namespace application.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<Video> Videos { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -75,6 +76,10 @@ namespace application.Data
             modelBuilder.Entity<Subscription>()
                 .Property(x => x.SubscriptionUserName)
                 .IsRequired();
+            #endregion
+            #region Video
+            modelBuilder.Entity<Video>().ToTable("Video");
+            modelBuilder.Entity<Video>().HasKey(x => x.VideoId);
             #endregion
         }
     }

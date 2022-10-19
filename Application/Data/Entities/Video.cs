@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Models.Video
+namespace Application.Data.Entities
 {
-    public class FullVideoDto
+    public class Video
     {
         public int VideoId { get; set; }
         public int AuthorId { get; set; }

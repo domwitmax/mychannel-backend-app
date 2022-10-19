@@ -1,23 +1,126 @@
-﻿using Application.Models.Video;
+﻿using Application.Interfaces.Services;
+using Application.Models.Video;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Web_api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class VideoController : ControllerBase
     {
-        [HttpGet("{videoId}")]
+        private IFileService _fileService;
+        private IVideoService _videoService;
+        public VideoController(IFileService fileService, IVideoService videoService)
+        {
+            _fileService = fileService;
+            _videoService = videoService;
+        }
+        private int? getUserId()
+        {
+            if (!int.TryParse(User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+                return null;
+            return userId;
+        }
+
+        [HttpPost("AddVideo")]
+        [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AddVideo([FromBody] VideoDto videoDto)
+        {
+            int? result = _videoService.AddVideo(videoDto);
+            if(result == null)
+                return BadRequest();
+            return Ok(result.Value);
+        }
+        [HttpPost("LoadVideo/{videoId}")]
+        [RequestSizeLimit(10737418240)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 10737418240)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public IActionResult LoadVideo([FromForm] IFormFile file, [FromRoute] int videoId)
+        {
+            FullVideoDto fullVideoDto = _videoService.GetVideo(videoId);
+            if (fullVideoDto == null)
+                return BadRequest();
+            int? userId = getUserId();
+            if (userId == null || fullVideoDto.AuthorId != userId)
+                return Unauthorized();
+            if (fullVideoDto.VideoPath != null)
+                return Conflict();
+            string? path = _fileService.LoadVideo(file, userId.Value);
+            if (path == null)
+                return BadRequest();
+            _videoService.UpdateVideo(path, videoId);
+            return Ok();
+        }
+        [HttpPost("LoadThumbnail/{videoId}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult LoadThumbnail([FromForm] IFormFile file, [FromRoute] int videoId)
+        {
+            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId);
+            if (fullVideoDto == null)
+                return BadRequest();
+            int? userId = getUserId();
+            if (userId == null || fullVideoDto.AuthorId != userId)
+                return Unauthorized();
+            if (fullVideoDto.ThumbnailPath != null)
+                return Conflict();
+            string? path = _fileService.LoadThumbnail(file, userId.Value);
+            if (path == null)
+                return (IActionResult)Results.Problem(statusCode: 500);
+            _videoService.UpdateThumbnail(path, videoId);
+            return Ok();
+        }
+        [HttpPost("DeleteVideo/{videoId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteVideo([FromRoute] int videoId)
+        {
+            FullVideoDto fullVideoDto = _videoService.GetVideo(videoId);
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            if (fullVideoDto == null)
+                return NotFound();
+            if (userId != fullVideoDto.AuthorId)
+                return Unauthorized();
+            bool result = _videoService.DeleteVideo(videoId);
+            if(!result)
+                return BadRequest();
+            return Ok();
+        }
+        [HttpGet("GetVideo/{videoId}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(FullVideoDto),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetVideo([FromRoute] int videoId)
         {
-            VideoDto videoDto = new VideoDto();
-            return Ok(videoDto);
+            FullVideoDto fullVideoDto = _videoService.GetVideo(videoId);
+            if (fullVideoDto == null)
+                return NotFound();
+            return Ok(fullVideoDto);
         }
-        [HttpPost]
-        public IActionResult UploadVideo([FromBody] FullVideoDto fullVideoDto)
+        [HttpGet("GetAllUserVideo/{userName}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<FullVideoDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetAllUserVideo([FromRoute] string userName)
         {
-            VideoDto videoDto = new VideoDto();
-            return Ok(videoDto);
+            IEnumerable<FullVideoDto> videoDtos = _videoService.GetAllVideo(userName);
+            if (videoDtos == null)
+                return NotFound();
+            return Ok(videoDtos);
         }
     }
 }
