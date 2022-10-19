@@ -17,6 +17,7 @@ namespace application.Data
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<VideoStatus> VideoStatuses { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -80,6 +81,29 @@ namespace application.Data
             #region Video
             modelBuilder.Entity<Video>().ToTable("Video");
             modelBuilder.Entity<Video>().HasKey(x => x.VideoId);
+            modelBuilder.Entity<Video>()
+                .Property(x => x.AuthorId)
+                .IsRequired();
+            modelBuilder.Entity<Video>()
+                .Property(x => x.Title)
+                .HasMaxLength(200)
+                .IsRequired();
+            modelBuilder.Entity<Video>()
+                .Property(x => x.Created)
+                .IsRequired();
+            #endregion
+            #region VideoStatus
+            modelBuilder.Entity<VideoStatus>().ToTable("VideoStatus");
+            modelBuilder.Entity<VideoStatus>().HasKey(x => x.Id);
+            modelBuilder.Entity<VideoStatus>()
+                .Property(x => x.UserId)
+                .IsRequired();
+            modelBuilder.Entity<VideoStatus>()
+                .Property(x => x.VideoId)
+                .IsRequired();
+            modelBuilder.Entity<VideoStatus>()
+                .Property(x => x.VideoTime)
+                .IsRequired();
             #endregion
         }
     }
