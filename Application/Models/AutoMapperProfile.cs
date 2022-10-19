@@ -2,6 +2,7 @@
 using Application.Models.Comment;
 using Application.Models.Setting;
 using Application.Models.Subscription;
+using Application.Models.Video;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,11 @@ namespace Application.Models
             #region Subscription
             CreateMap<SubscriptionDto, Data.Entities.Subscription>();
             CreateMap<Data.Entities.Subscription, SubscriptionDto>();
+            #endregion
+            #region Video
+            CreateMap<VideoDto, Data.Entities.Video>();
+            CreateMap<Data.Entities.Video, FullVideoDto>()
+                .ForMember(dect => dect.Created, act => act.MapFrom(src => DateTime.Now));
             #endregion
         }
     }
