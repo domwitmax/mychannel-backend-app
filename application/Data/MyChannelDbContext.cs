@@ -17,7 +17,9 @@ namespace application.Data
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<VideoLiked> VideoLikeds { get; set; }
         public DbSet<VideoStatus> VideoStatuses { get; set; }
+        public DbSet<View> Views { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -92,6 +94,16 @@ namespace application.Data
                 .Property(x => x.Created)
                 .IsRequired();
             #endregion
+            #region VideoLiked
+            modelBuilder.Entity<VideoLiked>().ToTable("VideoLiked");
+            modelBuilder.Entity<VideoLiked>().HasKey(x => x.Id);
+            modelBuilder.Entity<VideoLiked>()
+                .Property(x => x.UserId)
+                .IsRequired();
+            modelBuilder.Entity<VideoLiked>()
+                .Property(x => x.VideoId)
+                .IsRequired();
+            #endregion
             #region VideoStatus
             modelBuilder.Entity<VideoStatus>().ToTable("VideoStatus");
             modelBuilder.Entity<VideoStatus>().HasKey(x => x.Id);
@@ -103,6 +115,16 @@ namespace application.Data
                 .IsRequired();
             modelBuilder.Entity<VideoStatus>()
                 .Property(x => x.VideoTime)
+                .IsRequired();
+            #endregion
+            #region View
+            modelBuilder.Entity<View>().ToTable("View");
+            modelBuilder.Entity<View>().HasKey(x => x.Id);
+            modelBuilder.Entity<View>()
+                .Property(x => x.VideoId)
+                .IsRequired();
+            modelBuilder.Entity<View>()
+                .Property(x => x.ViewDate)
                 .IsRequired();
             #endregion
         }

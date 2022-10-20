@@ -1,53 +1,114 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Models.Video;
+using Application.Interfaces.Services;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/{videoId}")]
+    [Authorize]
+    [Route("api/[controller]")]
     public class RankingController: ControllerBase
     {
-        [HttpGet]
+        IGetVideoService _getVideoService;
+        IRankingService _rankingService;
+        public RankingController(IGetVideoService getVideoService, IRankingService rankingService)
+        {
+            _getVideoService = getVideoService;
+            _rankingService = rankingService;
+        }
+        private int? getUserId()
+        {
+            string? userIdStr = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
+                return null;
+            return userId;
+        }
+        [HttpGet("View/{videoId}")]
+        [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
         public IActionResult GetViews([FromRoute] int videoId)
         {
-            int views = 0;
+            int views = _rankingService.GetViews(videoId);
             return Ok(views);
         }
-        [HttpPost]
-        public IActionResult AddView([FromRoute] int video)
+        [HttpPost("View/{videoId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AddView([FromRoute] int videoId)
         {
-            int view = 0;
-            return Ok(view);
+            int? userId = getUserId();
+            bool result = _rankingService.AddView(videoId, userId);
+            if (!result)
+                return BadRequest();
+            return Ok();
         }
-        [HttpGet("Like")]
+        [HttpGet("Like/{videoId}")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public IActionResult GetLike([FromRoute] int videoId)
         {
-            int like = 0;
+            int like = _rankingService.GetLikes(videoId);
             return Ok(like);
         }
-        [HttpPost("Like")]
+        [HttpPost("Like/{videoId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult AddLike([FromRoute] int videoId)
         {
-            var like = 0;
-            return Ok(like);
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            bool like = _rankingService.AddLike(videoId, userId.Value);
+            if(!like)
+                return BadRequest();
+            return Ok();
         }
-        [HttpGet("Dislike")]
+        [HttpGet("Dislike/{videoId}")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public IActionResult GetDislike([FromRoute] int videoId)
         {
-            int dislike = 0;
+            int dislike = _rankingService.GetDislikes(videoId);
             return Ok(dislike);
         }
-        [HttpPost("Dislike")]
+        [HttpPost("Dislike/{videoId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult AddDislike([FromRoute] int videoId)
         {
-            int dislike = 0;
-            return Ok(dislike);
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            bool result = _rankingService.AddDislike(videoId, userId.Value);
+            if (!result)
+                return BadRequest();
+            return Ok();
         }
         [HttpGet("GetProposingVideos")]
-        public IActionResult GetProposingVideos([FromRoute] int videoId)
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<FullVideoDto>),StatusCodes.Status200OK)]
+        public IActionResult GetProposingVideos()
         {
-            IEnumerable<VideoDto> videos = new List<VideoDto>();
-            return Ok(videos);
+            return Ok(_getVideoService.VideoProposing());
+        }
+        [HttpGet("Search/{searchKey}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<FullVideoDto>),StatusCodes.Status200OK)]
+        public IActionResult Search([FromRoute] string searchKey)
+        {
+            return Ok(_getVideoService.Search(searchKey));
+        }
+        [HttpGet("IsLiked/{videoId}")]
+        [ProducesResponseType(typeof(bool?),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult IsLiked([FromRoute] int videoId)
+        {
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            bool? isLiked = _rankingService.IsLiked(videoId, userId.Value);
+            return Ok(isLiked);
         }
     }
 }
