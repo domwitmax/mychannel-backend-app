@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Application.Interfaces.Services;
 using Application.Models.Subscription;
 using Microsoft.AspNetCore.Authorization;
@@ -14,16 +9,9 @@ namespace Web_api.Controllers
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-    public class SubscriptionController : ControllerBase
+    public class SubscriptionController: ControllerBase
     {
         private readonly ISubscriptionService _subscriptionService;
-        private int? getUserId()
-        {
-            string? userIdStr = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
-                return null;
-            return userId;
-        }
         private string? getUserName()
         {
             string? userName = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
@@ -45,6 +33,7 @@ namespace Web_api.Controllers
             return Ok(subscriptions);
         }
         [HttpGet("Count/{subscriptionUserName}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
         public IActionResult GetSubscriptionsCount([FromRoute] string subscriptionUserName)
         {

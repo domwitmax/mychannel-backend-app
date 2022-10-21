@@ -1,15 +1,13 @@
-﻿using Application.Interfaces.Repository;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Application.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Application.Interfaces.Services;
-using System.Security.Claims;
 
 namespace Web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController: ControllerBase
     {
         private readonly IAccountService _accountService;
         public AccountController(IAccountService accountService)
@@ -39,8 +37,8 @@ namespace Web_api.Controllers
         [HttpGet("GetUser/{userName}")]
         [Authorize]
         [ProducesResponseType(typeof(GetUserDto),StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetUser(string userName)
         {
             GetUserDto? userDto = _accountService.GetUser(userName);
@@ -51,8 +49,8 @@ namespace Web_api.Controllers
         [HttpPatch("Update")]
         [Authorize]
         [ProducesResponseType(typeof(UpdateDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Update([FromBody] UpdateDto updateDto)
         {
             UserDto? userDto = _accountService.Update(updateDto);

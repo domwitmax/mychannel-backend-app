@@ -1,16 +1,10 @@
 ﻿using Application.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace application.Data
+namespace Application.Data
 {
     public class MyChannelDbContext : DbContext
     {
-        public MyChannelDbContext() { }
         public MyChannelDbContext(DbContextOptions<MyChannelDbContext> contextOptions) : base(contextOptions) { }
         public DbSet<User> Users { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -20,11 +14,7 @@ namespace application.Data
         public DbSet<VideoLiked> VideoLikeds { get; set; }
         public DbSet<VideoStatus> VideoStatuses { get; set; }
         public DbSet<View> Views { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer("server=(localdb)\\MSSQLLocalDB;Database=MyChannelDbContext;Trusted_Connection=True");
-        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region Account

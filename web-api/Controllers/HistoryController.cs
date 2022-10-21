@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace web_api.Controllers
+namespace Web_api.Controllers
 {
     [ApiController]
     [Authorize]
@@ -19,6 +19,7 @@ namespace web_api.Controllers
         [HttpPost("SaveVideoStatus")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult SaveVideoStatus(VideoStatusDto videoStatusDto)
         {
             string? userIdStr = User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -29,12 +30,11 @@ namespace web_api.Controllers
             bool result = _historyService.SaveVideoStatus(videoStatusDto,userId);
             if (!result)
                 return BadRequest();
-            
-
             return Ok();
         }
         [HttpPost("GetVideoStatus/{videoId}")]
         [ProducesResponseType(typeof(VideoStatusDto),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetVideoStatus([FromRoute] int videoId)
         {

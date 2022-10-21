@@ -1,19 +1,15 @@
 ﻿using Application.Data.Entities;
 using Application.Interfaces.Repository;
+using Application.Interfaces.Services;
 using Application.Models.Setting;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class SettingService : Interfaces.Services.ISettingService
+    public class SettingService: ISettingService
     {
-        ISettingRepository _settingRepository;
-        IMapper _mapper;
+        private readonly ISettingRepository _settingRepository;
+        private readonly IMapper _mapper;
         public SettingService(ISettingRepository settingRepository, IMapper mapper)
         {
             _settingRepository = settingRepository;

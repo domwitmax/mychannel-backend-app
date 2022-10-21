@@ -4,18 +4,15 @@ using Application.Repository;
 using Application.Services;
 using AutoMapper;
 using Application.Models;
-using application.Data;
+using Application.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Application.Data.Entities;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 var authenticationSettings = new AuthenticationSettings();
 
@@ -50,7 +47,6 @@ builder.Services.AddSwaggerGen(opt =>
 });
 builder.Services.AddDbContext<MyChannelDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyChannel")));
-
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 builder.Services.AddAuthentication(option =>
 {
@@ -73,11 +69,13 @@ var config = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new AutoMapperProfile());
 });
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 var mapper = config.CreateMapper();
+#region Singleton
 builder.Services.AddSingleton(mapper);
 builder.Services.AddSingleton(authenticationSettings);
-//Repository
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+#endregion
+#region Repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
@@ -87,7 +85,8 @@ builder.Services.AddScoped<IRankingRepository, RankingRepository>();
 builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
-//Services
+#endregion
+#region Service
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IFileService, FileService>();
@@ -97,6 +96,7 @@ builder.Services.AddScoped<IRankingService, RankingService>();
 builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<IVideoService, VideoService>();
+#endregion
 
 builder.Services.AddCors(options =>
 {
@@ -115,7 +115,6 @@ app.UseAuthentication();
 
 app.UseCors("Frontend");
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -1,17 +1,12 @@
-﻿using application.Data;
+﻿using Application.Data;
 using Application.Data.Entities;
 using Application.Interfaces.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Repository
 {
-    public class SettingRepository : ISettingRepository
+    public class SettingRepository: ISettingRepository
     {
-        private MyChannelDbContext _context;
+        private readonly MyChannelDbContext _context;
         public SettingRepository(MyChannelDbContext context)
         {
             _context = context;

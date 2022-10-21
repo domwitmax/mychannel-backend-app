@@ -1,16 +1,10 @@
 ﻿using Application.Interfaces.Repository;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Repository
 {
-    public class FileRepository : IFileRepository
+    public class FileRepository: IFileRepository
     {
-        public static string RootPath;
         public bool AddNewFolder(string userName)
         {
             string path = Path.Combine("wwwroot", userName);

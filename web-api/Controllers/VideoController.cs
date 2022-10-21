@@ -9,14 +9,16 @@ namespace Web_api.Controllers
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-    public class VideoController : ControllerBase
+    public class VideoController: ControllerBase
     {
         private IFileService _fileService;
         private IVideoService _videoService;
-        public VideoController(IFileService fileService, IVideoService videoService)
+        private readonly IRankingService _rankingService;
+        public VideoController(IFileService fileService, IVideoService videoService, IRankingService rankingService)
         {
             _fileService = fileService;
             _videoService = videoService;
+            _rankingService = rankingService;
         }
         private int? getUserId()
         {
@@ -28,6 +30,7 @@ namespace Web_api.Controllers
         [HttpPost("AddVideo")]
         [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult AddVideo([FromBody] VideoDto videoDto)
         {
             int? result = _videoService.AddVideo(videoDto);
@@ -109,6 +112,8 @@ namespace Web_api.Controllers
             FullVideoDto fullVideoDto = _videoService.GetVideo(videoId);
             if (fullVideoDto == null)
                 return NotFound();
+            int? userId = getUserId();
+            _rankingService.AddView(videoId, userId);
             return Ok(fullVideoDto);
         }
         [HttpGet("GetAllUserVideo/{userName}")]

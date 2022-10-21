@@ -1,15 +1,15 @@
 ﻿using Application.Data.Entities;
 using Application.Interfaces.Repository;
-using Application.Models;
+using Application.Interfaces.Services;
 using Application.Models.Subscription;
 using AutoMapper;
 
 namespace Application.Services
 {
-    public class SubscriptionService : Interfaces.Services.ISubscriptionService
+    public class SubscriptionService: ISubscriptionService
     {
-        ISubscriptionRepository _subscriptionRepository;
-        IMapper _mapper;
+        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IMapper _mapper;
         public SubscriptionService(ISubscriptionRepository subscriptionRepository, IMapper mappper)
         {
             _subscriptionRepository = subscriptionRepository;

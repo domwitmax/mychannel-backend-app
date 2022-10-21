@@ -1,21 +1,17 @@
 ﻿using Application.Data.Entities;
 using Application.Interfaces.Repository;
 using Application.Models.Video;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
+using Application.Interfaces.Services;
 
 namespace Application.Services
 {
-    public class VideoService : Interfaces.Services.IVideoService
+    public class VideoService: IVideoService
     {
-        IAccountRepository _accountRepository;
-        IVideoRepository _videoRepository;
-        IFileRepository _fileRepository;
-        IMapper _mapper;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IVideoRepository _videoRepository;
+        private readonly IFileRepository _fileRepository;
+        private readonly IMapper _mapper;
 
         public VideoService(IAccountRepository accountRepository, IVideoRepository videoRepository,IFileRepository fileRepository, IMapper mapper)
         {
