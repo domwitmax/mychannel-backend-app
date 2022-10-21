@@ -16,8 +16,8 @@ namespace Web_api.Controllers
             _commentService = commentService;
         }
         [HttpGet("{videoId}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<CommentDto>),StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetComments([FromRoute] int videoId)
         {
             IEnumerable<CommentDto> comments = _commentService.GetComments(videoId);

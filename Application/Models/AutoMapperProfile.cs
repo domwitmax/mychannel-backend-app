@@ -36,9 +36,9 @@ namespace Application.Models
             CreateMap<Data.Entities.Subscription, SubscriptionDto>();
             #endregion
             #region Video
-            CreateMap<VideoDto, Data.Entities.Video>();
-            CreateMap<Data.Entities.Video, FullVideoDto>()
+            CreateMap<VideoDto, Data.Entities.Video>()
                 .ForMember(dect => dect.Created, act => act.MapFrom(src => DateTime.Now));
+            CreateMap<Data.Entities.Video, FullVideoDto>();
             #endregion
             #region VideoStatus
             CreateMap<VideoStatusDto, Data.Entities.VideoStatus>();

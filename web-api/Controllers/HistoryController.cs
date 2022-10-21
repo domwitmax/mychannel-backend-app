@@ -16,11 +16,11 @@ namespace Web_api.Controllers
         {
             _historyService = historyService;
         }
-        [HttpPost("SaveVideoStatus")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult SaveVideoStatus(VideoStatusDto videoStatusDto)
+        public IActionResult SaveVideoStatus([FromBody] VideoStatusDto videoStatusDto)
         {
             string? userIdStr = User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             if (userIdStr == null)
@@ -32,7 +32,7 @@ namespace Web_api.Controllers
                 return BadRequest();
             return Ok();
         }
-        [HttpPost("GetVideoStatus/{videoId}")]
+        [HttpGet("{videoId}")]
         [ProducesResponseType(typeof(VideoStatusDto),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

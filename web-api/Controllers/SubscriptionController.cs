@@ -40,7 +40,7 @@ namespace Web_api.Controllers
             int count = _subscriptionService.GetSubscriptionCount(subscriptionUserName);
             return Ok(count);
         }
-        [HttpPost("AddSubsscription")]
+        [HttpPost("AddSubscription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
