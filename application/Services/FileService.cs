@@ -1,17 +1,13 @@
 ﻿using Application.Interfaces.Repository;
+using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class FileService : Interfaces.Services.IFileService
+    public class FileService: IFileService
     {
-        IFileRepository _fileRepository;
-        IAccountRepository _accountRepository;
+        private readonly IFileRepository _fileRepository;
+        private readonly IAccountRepository _accountRepository;
         public FileService(IFileRepository fileRepository, IAccountRepository accountRepository)
         {
             _fileRepository = fileRepository;

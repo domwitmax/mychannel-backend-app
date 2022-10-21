@@ -3,15 +3,10 @@ using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
 using Application.Models.Video;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class GetVideoService : IGetVideoService
+    public class GetVideoService: IGetVideoService
     {
         private readonly IGetVideoRepository _getVideoRepository;
         private readonly IMapper _mapper;

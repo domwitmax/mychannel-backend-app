@@ -11,8 +11,8 @@ namespace Web_api.Controllers
     [Route("api/[controller]")]
     public class RankingController: ControllerBase
     {
-        IGetVideoService _getVideoService;
-        IRankingService _rankingService;
+        private readonly IGetVideoService _getVideoService;
+        private readonly IRankingService _rankingService;
         public RankingController(IGetVideoService getVideoService, IRankingService rankingService)
         {
             _getVideoService = getVideoService;
@@ -26,24 +26,15 @@ namespace Web_api.Controllers
             return userId;
         }
         [HttpGet("View/{videoId}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
         public IActionResult GetViews([FromRoute] int videoId)
         {
             int views = _rankingService.GetViews(videoId);
             return Ok(views);
         }
-        [HttpPost("View/{videoId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult AddView([FromRoute] int videoId)
-        {
-            int? userId = getUserId();
-            bool result = _rankingService.AddView(videoId, userId);
-            if (!result)
-                return BadRequest();
-            return Ok();
-        }
         [HttpGet("Like/{videoId}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public IActionResult GetLike([FromRoute] int videoId)
         {
@@ -65,6 +56,7 @@ namespace Web_api.Controllers
             return Ok();
         }
         [HttpGet("Dislike/{videoId}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public IActionResult GetDislike([FromRoute] int videoId)
         {

@@ -11,7 +11,7 @@ namespace Web_api.Controllers
     [Route("api/[controller]")]
     public class SettingController: ControllerBase
     {
-        private ISettingService _settingService;
+        private readonly ISettingService _settingService;
         public SettingController(ISettingService settingService)
         {
             _settingService = settingService;

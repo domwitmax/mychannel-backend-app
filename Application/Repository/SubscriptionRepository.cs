@@ -1,17 +1,12 @@
-﻿using application.Data;
+﻿using Application.Data;
 using Application.Data.Entities;
 using Application.Interfaces.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Repository
 {
-    public class SubscriptionRepository : ISubscriptionRepository
+    public class SubscriptionRepository: ISubscriptionRepository
     {
-        MyChannelDbContext _context;
+        private readonly MyChannelDbContext _context;
         public SubscriptionRepository(MyChannelDbContext context)
         {
             _context = context;

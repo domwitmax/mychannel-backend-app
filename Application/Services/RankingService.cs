@@ -1,17 +1,12 @@
 ﻿using Application.Data.Entities;
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class RankingService : IRankingService
+    public class RankingService: IRankingService
     {
-        IRankingRepository _rankingRepository;
+        private readonly IRankingRepository _rankingRepository;
         public RankingService(IRankingRepository rankingRepository)
         {
             _rankingRepository = rankingRepository;

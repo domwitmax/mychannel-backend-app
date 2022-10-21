@@ -1,10 +1,4 @@
-﻿using Application.Models;
-using Application.Models.Subscription;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Models.Subscription;
 
 namespace Application.Interfaces.Services
 {

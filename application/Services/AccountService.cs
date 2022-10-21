@@ -1,22 +1,18 @@
 ﻿using Application.Data.Entities;
 using Application.Interfaces.Repository;
+using Application.Interfaces.Services;
 using Application.Models;
 using Application.Models.Account;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class AccountService: Interfaces.Services.IAccountService
+    public class AccountService: IAccountService
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IAccountRepository _accountRepository;

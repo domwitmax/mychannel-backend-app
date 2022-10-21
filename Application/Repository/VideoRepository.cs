@@ -1,15 +1,10 @@
-﻿using application.Data;
+﻿using Application.Data;
 using Application.Data.Entities;
 using Application.Interfaces.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Repository
 {
-    public class VideoRepository : IVideoRepository
+    public class VideoRepository: IVideoRepository
     {
         private readonly MyChannelDbContext _context;
         public VideoRepository(MyChannelDbContext context)

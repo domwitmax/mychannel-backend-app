@@ -1,11 +1,6 @@
-﻿using application.Data;
+﻿using Application.Data;
 using Application.Data.Entities;
 using Application.Interfaces.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Repository
 {

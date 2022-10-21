@@ -1,10 +1,4 @@
-﻿using Application.Data.Entities;
-using Application.Models.Setting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Models.Setting;
 
 namespace Application.Interfaces.Services
 {

@@ -1,22 +1,15 @@
-﻿using application.Data;
+﻿using Application.Data;
 using Application.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+using Application.Interfaces.Repository;
 
 namespace Application.Repository
 {
-    public class AccountRepository: Application.Interfaces.Repository.IAccountRepository
+    public class AccountRepository: IAccountRepository
     {
-        MyChannelDbContext _context;
-        IMapper _mapper;
-        public AccountRepository(MyChannelDbContext context, IMapper mapper)
+        private readonly MyChannelDbContext _context;
+        public AccountRepository(MyChannelDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public bool AddUser(User user)

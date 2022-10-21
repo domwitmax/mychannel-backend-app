@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces.Services;
 using Application.Models.Comment;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +16,7 @@ namespace Web_api.Controllers
             _commentService = commentService;
         }
         [HttpGet("{videoId}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<CommentDto>),StatusCodes.Status200OK)]
         public IActionResult GetComments([FromRoute] int videoId)
         {
@@ -26,6 +26,7 @@ namespace Web_api.Controllers
         [HttpPost("{videoId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult AddComment([FromRoute] int videoId, [FromBody] CreatedCommentDto commentDto)
         {
             bool result = _commentService.AddComment(videoId, commentDto);

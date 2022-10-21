@@ -5,11 +5,6 @@ using Application.Models.Setting;
 using Application.Models.Subscription;
 using Application.Models.Video;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Models
 {
@@ -41,9 +36,9 @@ namespace Application.Models
             CreateMap<Data.Entities.Subscription, SubscriptionDto>();
             #endregion
             #region Video
-            CreateMap<VideoDto, Data.Entities.Video>();
-            CreateMap<Data.Entities.Video, FullVideoDto>()
+            CreateMap<VideoDto, Data.Entities.Video>()
                 .ForMember(dect => dect.Created, act => act.MapFrom(src => DateTime.Now));
+            CreateMap<Data.Entities.Video, FullVideoDto>();
             #endregion
             #region VideoStatus
             CreateMap<VideoStatusDto, Data.Entities.VideoStatus>();
