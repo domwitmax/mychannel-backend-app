@@ -4,7 +4,7 @@ namespace Application.Interfaces.Repository
 {
     public interface IGetVideoRepository
     {
-        IEnumerable<Video> Search(string searchKey);
-        IEnumerable<Video> VideoProposing();
+        IEnumerable<Video> Search(string searchKey, int? userId);
+        IEnumerable<Video> VideoProposing(int? userId);
     }
 }

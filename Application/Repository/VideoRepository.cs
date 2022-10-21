@@ -36,14 +36,21 @@ namespace Application.Repository
             return true;
         }
 
-        public IEnumerable<Video> GetAllUserVideos(int userId)
+        public IEnumerable<Video> GetAllUserVideos(int authorId, int? userId)
         {
+            if(userId == null || authorId != userId)
+                return _context.Videos.Where(x => x.AuthorId == authorId && x.VideoPath != null && x.ThumbnailPath != null);
             return _context.Videos.Where(x => x.AuthorId == userId);
         }
 
-        public Video? GetVideo(int videoId)
+        public Video? GetVideo(int videoId, int? userId)
         {
-            return _context.Videos.SingleOrDefault(x => x.VideoId == videoId);
+            Video? video = _context.Videos.SingleOrDefault(x => x.VideoId == videoId);
+            if (video != null && video.VideoPath != null && video.ThumbnailPath != null)
+                return video;
+            if(userId != null && video?.AuthorId == userId)
+                return video;
+            return null;
         }
 
         public bool UpdateThumbnail(int videoId, string? path)

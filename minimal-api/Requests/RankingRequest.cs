@@ -12,32 +12,40 @@ namespace Minimal_api.Requests
         {
             app.MapGet("api/Ranking/View/{videoId}", GetViews)
                 .Produces<int>(StatusCodes.Status200OK)
+                .WithTags("Ranking")
                 .AllowAnonymous();
             app.MapGet("api/Ranking/Like/{videoId}", GetLike)
                 .Produces<int>(StatusCodes.Status200OK)
+                .WithTags("Ranking")
                 .AllowAnonymous();
             app.MapPost("api/Ranking/Like/{videoId}", AddLike)
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Ranking")
                 .RequireAuthorization();
             app.MapGet("api/Ranking/Dislike/{videoId}", GetDislike)
                 .Produces<int>(StatusCodes.Status200OK)
+                .WithTags("Ranking")
                 .AllowAnonymous();
             app.MapPost("api/Ranking/Dislike/{videoId}", AddDislike)
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Ranking")
                 .RequireAuthorization();
             app.MapGet("api/Ranking/GetProposingVideos", GetProposingVideos)
                 .Produces<IEnumerable<FullVideoDto>>(StatusCodes.Status200OK)
+                .WithTags("Ranking")
                 .AllowAnonymous();
             app.MapGet("api/Ranking/Search/{searchKey}", Search)
                 .Produces<IEnumerable<FullVideoDto>>(StatusCodes.Status200OK)
+                .WithTags("Ranking")
                 .AllowAnonymous();
             app.MapGet("api/Ranking/IsLiked/{videoId}", IsLiked)
                 .Produces<bool?>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Ranking")
                 .RequireAuthorization();
 
             return app;
@@ -84,13 +92,15 @@ namespace Minimal_api.Requests
                 return Results.BadRequest();
             return Results.Ok();
         }
-        public static IResult GetProposingVideos([FromServices] IGetVideoService getVideoService)
+        public static IResult GetProposingVideos(ClaimsPrincipal user, [FromServices] IGetVideoService getVideoService)
         {
-            return Results.Ok(getVideoService.VideoProposing());
+            int? userId = getUserId(user);
+            return Results.Ok(getVideoService.VideoProposing(userId));
         }
-        public static IResult Search([FromServices] IGetVideoService getVideoService, [FromRoute] string searchKey)
+        public static IResult Search(ClaimsPrincipal user, [FromServices] IGetVideoService getVideoService, [FromRoute] string searchKey)
         {
-            return Results.Ok(getVideoService.Search(searchKey));
+            int? userId = getUserId(user);
+            return Results.Ok(getVideoService.Search(searchKey,userId));
         }
         public static IResult IsLiked(ClaimsPrincipal user, [FromServices] IRankingService rankingService, [FromRoute] int videoId)
         {

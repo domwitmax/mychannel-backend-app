@@ -8,15 +8,23 @@ namespace Application.Services
 {
     public class SubscriptionService: ISubscriptionService
     {
+        private readonly IAccountService _accountService;
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly IMapper _mapper;
-        public SubscriptionService(ISubscriptionRepository subscriptionRepository, IMapper mappper)
+        public SubscriptionService(IAccountService accountService, ISubscriptionRepository subscriptionRepository, IMapper mappper)
         {
+            _accountService = accountService;
             _subscriptionRepository = subscriptionRepository;
             _mapper = mappper;
         }
+        private bool subscriptionUserExist(SubscriptionDto subscriptionDto)
+        {
+            return _accountService.Exist(subscriptionDto.SubscriptionUserName) && _accountService.Exist(subscriptionDto.UserName);
+        }
         public bool AddSubscription(SubscriptionDto subscriptionDto)
         {
+            if (!subscriptionUserExist(subscriptionDto))
+                return false;
             Subscription subscription = _mapper.Map<Subscription>(subscriptionDto);
             return _subscriptionRepository.AddSubscription(subscription);
         }
@@ -35,6 +43,8 @@ namespace Application.Services
 
         public bool RemoveSubscription(SubscriptionDto subscriptionDto)
         {
+            if (!subscriptionUserExist(subscriptionDto))
+                return false;
             Subscription subscription = _mapper.Map<Subscription>(subscriptionDto);
             return _subscriptionRepository.RemoveSubscription(subscription);
         }

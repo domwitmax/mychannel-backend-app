@@ -16,15 +16,15 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<FullVideoDto> Search(string searchKey)
+        public IEnumerable<FullVideoDto> Search(string searchKey, int? userId)
         {
-            IEnumerable<Video> videos = _getVideoRepository.Search(searchKey);
+            IEnumerable<Video> videos = _getVideoRepository.Search(searchKey, userId);
             return _mapper.Map<IEnumerable<FullVideoDto>>(videos);
         }
 
-        public IEnumerable<FullVideoDto> VideoProposing()
+        public IEnumerable<FullVideoDto> VideoProposing(int? userid)
         {
-            IEnumerable<Video> videos = _getVideoRepository.VideoProposing();
+            IEnumerable<Video> videos = _getVideoRepository.VideoProposing(userid);
             return _mapper.Map<IEnumerable<FullVideoDto>>(videos);
         }
     }

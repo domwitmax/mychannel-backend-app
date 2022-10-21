@@ -10,19 +10,23 @@ namespace Minimal_api.Requests
         {
             app.MapPost("api/Account/Login", Login)
                 .Produces<string>(StatusCodes.Status200OK)
+                .WithTags("Account")
                 .Produces(StatusCodes.Status400BadRequest);
             app.MapPost("api/Account/Register", Register)
                 .Produces<string>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status400BadRequest);
+                .Produces(StatusCodes.Status400BadRequest)
+                .WithTags("Account");
             app.MapPost("api/Account/GetUser/{userName}", GetUser)
                 .Produces<GetUserDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status404NotFound)
+                .WithTags("Account")
                 .RequireAuthorization();
             app.MapPut("api/Account/Update", Update)
                 .Produces<GetUserDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status404NotFound)
+                .WithTags("Account")
                 .RequireAuthorization();
 
             return app;

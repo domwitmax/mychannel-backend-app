@@ -38,7 +38,11 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetVideoStatus([FromRoute] int videoId)
         {
-            VideoStatusDto? videoStatusDto = _historyService.GetVideoStatus(videoId);
+            int? userId = null;
+            string? userIdStr = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdStr != null && int.TryParse(userIdStr, out int userIdTmp))
+                userId = userIdTmp;
+            VideoStatusDto? videoStatusDto = _historyService.GetVideoStatus(videoId, userId);
             if (videoStatusDto == null)
                 return NotFound();
             return Ok(videoStatusDto);

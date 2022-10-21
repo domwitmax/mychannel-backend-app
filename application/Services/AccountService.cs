@@ -30,6 +30,17 @@ namespace Application.Services
             _passwordHasher = passwordHasher;
         }
 
+        public bool Exist(int userId)
+        {
+            User? user = _accountRepository.GetUser(userId);
+            return user != null;
+        }
+        public bool Exist(string userName)
+        {
+            User? user = _accountRepository.GetUser(userName);
+            return user != null;
+        }
+
         public GetUserDto? GetUser(string userName)
         {
             User? user = _accountRepository.GetUser(userName);

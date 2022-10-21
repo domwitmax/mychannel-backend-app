@@ -13,12 +13,14 @@ namespace Minimal_api.Requests
                 .Produces<int>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Video")
                 .RequireAuthorization();
             app.MapPost("api/Video/LoadVideo/{videoId}", LoadVideo)
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status409Conflict)
+                .WithTags("Video")
                 .Accepts<IFormFile>("multipart/form-data")
                 .RequireAuthorization();
             app.MapPost("api/Video/LoadThumbnail/{videoId}", LoadThumbnail)
@@ -26,6 +28,7 @@ namespace Minimal_api.Requests
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status409Conflict)
+                .WithTags("Video")
                 .Accepts<IFormFile>("multipart/form-data")
                 .RequireAuthorization();
             app.MapDelete("api/Video/{videoId}", DeleteVideo)
@@ -33,14 +36,17 @@ namespace Minimal_api.Requests
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status404NotFound)
+                .WithTags("Video")
                 .RequireAuthorization();
             app.MapGet("api/Video/{videoId}", GetVideo)
                 .Produces<FullVideoDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
+                .WithTags("Video")
                 .AllowAnonymous();
             app.MapGet("api/video/GetAllUserVideo/{userName}", GetAllUserVideo)
                 .Produces<IEnumerable<FullVideoDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
+                .WithTags("Video")
                 .AllowAnonymous();
 
             return app;
@@ -60,12 +66,12 @@ namespace Minimal_api.Requests
         }
         public async static Task<IResult> LoadVideo(HttpRequest httpRequest,ClaimsPrincipal user, [FromServices] IVideoService videoService, [FromServices] IFileService fileService, [FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId);
+            int? userId = getUserId(user);
+            if (userId == null)
+                return Results.Unauthorized();
+            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return Results.BadRequest();
-            int? userId = getUserId(user);
-            if (userId == null || fullVideoDto.AuthorId != userId)
-                return Results.Unauthorized();
             if (fullVideoDto.VideoPath != null)
                 return Results.Conflict();
             if (!httpRequest.HasFormContentType)
@@ -84,12 +90,12 @@ namespace Minimal_api.Requests
         }
         public async static Task<IResult> LoadThumbnail(HttpRequest httpRequest,ClaimsPrincipal user, [FromServices] IVideoService videoService, [FromServices] IFileService fileService, [FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId);
+            int? userId = getUserId(user);
+            if (userId == null)
+                return Results.Unauthorized();
+            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return Results.BadRequest();
-            int? userId = getUserId(user);
-            if (userId == null || fullVideoDto.AuthorId != userId)
-                return Results.Unauthorized();
             if (fullVideoDto.ThumbnailPath != null)
                 return Results.Conflict();
             if (!httpRequest.HasFormContentType)
@@ -108,31 +114,32 @@ namespace Minimal_api.Requests
         }
         public static IResult DeleteVideo(ClaimsPrincipal user, [FromServices] IVideoService videoService,[FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId);
             int? userId = getUserId(user);
             if (userId == null)
                 return Results.Unauthorized();
+            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return Results.NotFound();
             if (userId != fullVideoDto.AuthorId)
                 return Results.Unauthorized();
-            bool result = videoService.DeleteVideo(videoId);
+            bool result = videoService.DeleteVideo(videoId, userId);
             if(!result)
                 return Results.BadRequest();
             return Results.Ok();
         }
         public static IResult GetVideo(ClaimsPrincipal user, [FromServices] IVideoService videoService, [FromServices] IRankingService rankingService, [FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId);
+            int? userId = getUserId(user);
+            FullVideoDto? fullVideoDto = videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return Results.NotFound();
-            int? userId = getUserId(user);
             rankingService.AddView(videoId, userId);
             return Results.Ok(fullVideoDto);
         }
-        public static IResult GetAllUserVideo([FromServices] IVideoService videoService, [FromRoute] string userName)
+        public static IResult GetAllUserVideo(ClaimsPrincipal user, [FromServices] IVideoService videoService, [FromRoute] string userName)
         {
-            IEnumerable<FullVideoDto> videoDtos = videoService.GetAllVideo(userName);
+            int? userId = getUserId(user);
+            IEnumerable<FullVideoDto> videoDtos = videoService.GetAllVideo(userName, userId);
             if (videoDtos == null)
                 return Results.NotFound();
             return Results.Ok(videoDtos);

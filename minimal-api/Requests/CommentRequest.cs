@@ -9,11 +9,13 @@ namespace Minimal_api.Requests
         public static WebApplication RegisterCommentEndpoints(this WebApplication app)
         {
             app.MapGet("api/Comment/{videoId}", GetComments)
-                .Produces<IEnumerable<CommentDto>>(StatusCodes.Status200OK);
+                .Produces<IEnumerable<CommentDto>>(StatusCodes.Status200OK)
+                .WithTags("Comment");
             app.MapPost("api/Comment/{videoId}", AddComment)
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Comment")
                 .RequireAuthorization();
 
             return app;

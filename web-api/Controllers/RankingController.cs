@@ -82,14 +82,16 @@ namespace Web_api.Controllers
         [ProducesResponseType(typeof(IEnumerable<FullVideoDto>),StatusCodes.Status200OK)]
         public IActionResult GetProposingVideos()
         {
-            return Ok(_getVideoService.VideoProposing());
+            int? userId = getUserId();
+            return Ok(_getVideoService.VideoProposing(userId));
         }
         [HttpGet("Search/{searchKey}")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<FullVideoDto>),StatusCodes.Status200OK)]
         public IActionResult Search([FromRoute] string searchKey)
         {
-            return Ok(_getVideoService.Search(searchKey));
+            int? userId = getUserId();
+            return Ok(_getVideoService.Search(searchKey, userId));
         }
         [HttpGet("IsLiked/{videoId}")]
         [ProducesResponseType(typeof(bool?),StatusCodes.Status200OK)]

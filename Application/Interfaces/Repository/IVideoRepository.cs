@@ -8,7 +8,7 @@ namespace Application.Interfaces.Repository
         bool UpdateVideo(int videoId, string? path);
         bool UpdateThumbnail(int videoId, string? path);
         bool DeleteVideo(int videoId);
-        Video? GetVideo(int videoId);
-        IEnumerable<Video> GetAllUserVideos(int userId);
+        Video? GetVideo(int videoId, int? userId);
+        IEnumerable<Video> GetAllUserVideos(int authorId, int? userId);
     }
 }

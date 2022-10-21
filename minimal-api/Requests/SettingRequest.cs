@@ -13,11 +13,13 @@ namespace Minimal_api.Requests
                 .Produces<SettingDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status404NotFound)
+                .WithTags("Setting")
                 .RequireAuthorization();
             app.MapPut("app/Setting/{userId}", UpdateSettings)
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Setting")
                 .RequireAuthorization();
 
             return app;

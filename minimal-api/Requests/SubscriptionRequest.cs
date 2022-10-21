@@ -12,19 +12,23 @@ namespace Minimal_api.Requests
             app.MapGet("api/Subscription", GetSubscriptions)
                 .Produces<IEnumerable<SubscriptionDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Subscription")
                 .RequireAuthorization();
             app.MapGet("api/Subscription/Count/{subscriptionUserName}", GetSubscriptionsCount)
                 .Produces<int>(StatusCodes.Status200OK)
+                .WithTags("Subscription")
                 .AllowAnonymous();
             app.MapPost("api/Subscription/AddSubscription", AddSubscription)
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Subscription")
                 .RequireAuthorization();
             app.MapPost("api/Subscription/RemoveSubscription", RemoveSubscription)
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized)
+                .WithTags("Subscription")
                 .RequireAuthorization();
 
             return app;

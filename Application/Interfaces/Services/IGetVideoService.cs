@@ -4,7 +4,7 @@ namespace Application.Interfaces.Services
 {
     public interface IGetVideoService
     {
-        IEnumerable<FullVideoDto> Search(string searchKey);
-        IEnumerable<FullVideoDto> VideoProposing();
+        IEnumerable<FullVideoDto> Search(string searchKey, int? userId);
+        IEnumerable<FullVideoDto> VideoProposing(int? userId);
     }
 }

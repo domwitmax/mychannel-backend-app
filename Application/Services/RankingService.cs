@@ -6,14 +6,25 @@ namespace Application.Services
 {
     public class RankingService: IRankingService
     {
+        private readonly IAccountService _accountService;
         private readonly IRankingRepository _rankingRepository;
-        public RankingService(IRankingRepository rankingRepository)
+        private readonly IVideoService _videoService;
+        public RankingService( IRankingRepository rankingRepository, IAccountService accountService, IVideoService videoService)
         {
             _rankingRepository = rankingRepository;
+            _accountService = accountService;
+            _videoService = videoService;
         }
-
+        private bool videoAndUserExist(int videoId, int? userId)
+        {
+            if(userId == null)
+                return false;
+            return _accountService.Exist(userId.Value) && _videoService.Exist(videoId, userId);
+        }
         public bool AddDislike(int videoId, int userId)
         {
+            if (!videoAndUserExist(videoId, userId))
+                return false;
             VideoLiked videoLiked = new VideoLiked()
             {
                 VideoId = videoId,
@@ -25,6 +36,8 @@ namespace Application.Services
 
         public bool AddLike(int videoId, int userId)
         {
+            if (!videoAndUserExist(videoId, userId))
+                return false;
             VideoLiked videoLiked = new VideoLiked()
             {
                 VideoId = videoId,
@@ -36,6 +49,10 @@ namespace Application.Services
 
         public bool AddView(int videoId, int? userId)
         {
+            if(_videoService.Exist(videoId, userId))
+                return false;
+            if(userId != null && !_accountService.Exist(videoId))
+                userId = null;
             return _rankingRepository.AddView(videoId, userId);
         }
 
@@ -56,6 +73,8 @@ namespace Application.Services
 
         public bool? IsLiked(int videoId, int userId)
         {
+            if (!videoAndUserExist(videoId, userId))
+                return null;
             return _rankingRepository.IsLiked(videoId, userId);
         }
     }

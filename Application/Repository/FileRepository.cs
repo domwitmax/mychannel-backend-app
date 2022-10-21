@@ -39,6 +39,10 @@ namespace Application.Repository
         public string? SaveFile(IFormFile fileFromUser, string userName, string fileName, string subFolder, string extension)
         {
             string path = $"{Path.Combine("wwwroot",userName, subFolder, fileName)}.{extension}";
+            if (!Directory.Exists(Path.Combine("wwwroot", userName)))
+                Directory.CreateDirectory(Path.Combine("wwwroot", userName));
+            if (!Directory.Exists(Path.Combine("wwwroot", userName, subFolder)))
+                Directory.CreateDirectory(Path.Combine("wwwroot", userName, subFolder));
             if (File.Exists(path))
                 return null;
             try

@@ -30,9 +30,9 @@ namespace Application.Services
             return video.VideoId;
         }
 
-        public bool DeleteVideo(int videoId)
+        public bool DeleteVideo(int videoId, int? userId)
         {
-            Video? video = _videoRepository.GetVideo(videoId);
+            Video? video = _videoRepository.GetVideo(videoId, userId);
             if(video == null)
                 return false;
             if(video.VideoPath != null)
@@ -42,18 +42,24 @@ namespace Application.Services
             return _videoRepository.DeleteVideo(videoId);
         }
 
-        public IEnumerable<FullVideoDto> GetAllVideo(string userName)
+        public bool Exist(int videoId, int? userId)
         {
-            int? userId = _accountRepository.GetUser(userName)?.UserId;
-            if(userId == null)
+            Video? video = _videoRepository.GetVideo(videoId, userId);
+            return video != null;
+        }
+
+        public IEnumerable<FullVideoDto> GetAllVideo(string userName, int? userId)
+        {
+            int? authorId = _accountRepository.GetUser(userName)?.UserId;
+            if(authorId == null)
                 return Enumerable.Empty<FullVideoDto>();
-            IEnumerable<Video> videos = _videoRepository.GetAllUserVideos(userId.Value);
+            IEnumerable<Video> videos = _videoRepository.GetAllUserVideos(authorId.Value, userId);
             return _mapper.Map<IEnumerable<FullVideoDto>>(videos);
         }
 
-        public FullVideoDto? GetVideo(int videoId)
+        public FullVideoDto? GetVideo(int videoId, int? userId)
         {
-            Video? video = _videoRepository.GetVideo(videoId);
+            Video? video = _videoRepository.GetVideo(videoId, userId);
             return _mapper.Map<FullVideoDto?>(video);
         }
 

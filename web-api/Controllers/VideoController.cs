@@ -47,12 +47,12 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult LoadVideo([FromForm] IFormFile file, [FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId);
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return BadRequest();
-            int? userId = getUserId();
-            if (userId == null || fullVideoDto.AuthorId != userId)
-                return Unauthorized();
             if (fullVideoDto.VideoPath != null)
                 return Conflict();
             string? path = _fileService.LoadVideo(file, userId.Value);
@@ -68,12 +68,12 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult LoadThumbnail([FromForm] IFormFile file, [FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId);
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return BadRequest();
-            int? userId = getUserId();
-            if (userId == null || fullVideoDto.AuthorId != userId)
-                return Unauthorized();
             if (fullVideoDto.ThumbnailPath != null)
                 return Conflict();
             string? path = _fileService.LoadThumbnail(file, userId.Value);
@@ -89,15 +89,15 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult DeleteVideo([FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId);
             int? userId = getUserId();
             if (userId == null)
                 return Unauthorized();
+            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return NotFound();
             if (userId != fullVideoDto.AuthorId)
                 return Unauthorized();
-            bool result = _videoService.DeleteVideo(videoId);
+            bool result = _videoService.DeleteVideo(videoId, userId);
             if(!result)
                 return BadRequest();
             return Ok();
@@ -108,10 +108,10 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetVideo([FromRoute] int videoId)
         {
-            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId);
+            int? userId = getUserId();
+            FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return NotFound();
-            int? userId = getUserId();
             _rankingService.AddView(videoId, userId);
             return Ok(fullVideoDto);
         }
@@ -121,7 +121,8 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAllUserVideo([FromRoute] string userName)
         {
-            IEnumerable<FullVideoDto> videoDtos = _videoService.GetAllVideo(userName);
+            int? userId = getUserId();
+            IEnumerable<FullVideoDto> videoDtos = _videoService.GetAllVideo(userName, userId);
             if (videoDtos == null)
                 return NotFound();
             return Ok(videoDtos);
