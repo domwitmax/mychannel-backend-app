@@ -8,11 +8,9 @@ namespace Application.Data
         public MyChannelDbContext(DbContextOptions<MyChannelDbContext> contextOptions) : base(contextOptions) { }
         public DbSet<User> Users { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Setting> Settings { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<VideoLiked> VideoLikeds { get; set; }
-        public DbSet<VideoStatus> VideoStatuses { get; set; }
         public DbSet<View> Views { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -50,16 +48,6 @@ namespace Application.Data
                 .Property(x => x.Created)
                 .IsRequired();
             #endregion
-            #region Setting
-            modelBuilder.Entity<Setting>().ToTable("Setting");
-            modelBuilder.Entity<Setting>().HasKey(x => x.UserId);
-            modelBuilder.Entity<Setting>()
-                .Property(x => x.UserId)
-                .ValueGeneratedNever();
-            modelBuilder.Entity<Setting>()
-                .Property(x => x.DarkMode)
-                .IsRequired();
-            #endregion
             #region Subscription
             modelBuilder.Entity<Subscription>().ToTable("Subscription");
             modelBuilder.Entity<Subscription>().HasKey(x => x.Id);
@@ -92,19 +80,6 @@ namespace Application.Data
                 .IsRequired();
             modelBuilder.Entity<VideoLiked>()
                 .Property(x => x.VideoId)
-                .IsRequired();
-            #endregion
-            #region VideoStatus
-            modelBuilder.Entity<VideoStatus>().ToTable("VideoStatus");
-            modelBuilder.Entity<VideoStatus>().HasKey(x => x.Id);
-            modelBuilder.Entity<VideoStatus>()
-                .Property(x => x.UserId)
-                .IsRequired();
-            modelBuilder.Entity<VideoStatus>()
-                .Property(x => x.VideoId)
-                .IsRequired();
-            modelBuilder.Entity<VideoStatus>()
-                .Property(x => x.VideoTime)
                 .IsRequired();
             #endregion
             #region View

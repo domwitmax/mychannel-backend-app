@@ -43,10 +43,14 @@ namespace Minimal_api.Requests
                 .WithTags("Ranking")
                 .AllowAnonymous();
             app.MapGet("api/Ranking/IsLiked/{videoId}", IsLiked)
-                .Produces<bool?>(StatusCodes.Status200OK)
+                .Produces<int>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .WithTags("Ranking")
                 .RequireAuthorization();
+            app.MapPost("api/Ranking/AddView/{videoId}", AddView)
+                .Produces(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .WithTags("Ranking");
 
             return app;
         }
@@ -108,7 +112,20 @@ namespace Minimal_api.Requests
             if (userId == null)
                 return Results.Unauthorized();
             bool? isLiked = rankingService.IsLiked(videoId, userId.Value);
-            return Results.Ok(isLiked);
+            if (isLiked == null)
+                return Results.Ok(0);
+            if (isLiked == true)
+                return Results.Ok(1);
+            else
+                return Results.Ok(-1);
+        }
+        public static IResult AddView([FromRoute] int videoId, [FromServices] IRankingService rankingService, ClaimsPrincipal user)
+        {
+            int? userId = getUserId(user);
+            bool view = rankingService.AddView(videoId, userId);
+            if (!view)
+                return Results.BadRequest();
+            return Results.Ok();
         }
     }
 }

@@ -49,9 +49,7 @@ namespace Application.Services
 
         public bool AddView(int videoId, int? userId)
         {
-            if(_videoService.Exist(videoId, userId))
-                return false;
-            if(userId != null && !_accountService.Exist(videoId))
+            if(userId != null && !_accountService.Exist(userId.Value))
                 userId = null;
             return _rankingRepository.AddView(videoId, userId);
         }

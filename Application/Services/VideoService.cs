@@ -54,13 +54,27 @@ namespace Application.Services
             if(authorId == null)
                 return Enumerable.Empty<FullVideoDto>();
             IEnumerable<Video> videos = _videoRepository.GetAllUserVideos(authorId.Value, userId);
-            return _mapper.Map<IEnumerable<FullVideoDto>>(videos);
+            IEnumerable<FullVideoDto> result = _mapper.Map<IEnumerable<FullVideoDto>>(videos);
+            return result.Select(data =>
+            {
+                string? userName = _accountRepository.GetUser(data.AuthorId)?.UserName;
+                data.AuthorName = userName != null ? userName : "";
+                return data;
+            });
         }
 
         public FullVideoDto? GetVideo(int videoId, int? userId)
         {
             Video? video = _videoRepository.GetVideo(videoId, userId);
-            return _mapper.Map<FullVideoDto?>(video);
+            FullVideoDto? result = _mapper.Map<FullVideoDto?>(video);
+            if (result != null)
+            {
+                string? userName = _accountRepository.GetUser(result.AuthorId)?.UserName;
+                if(userName == null) 
+                    return null;
+                result.AuthorName = userName;
+            }
+            return result;
         }
 
         public bool UpdateThumbnail(string thumbnailPath, int videoId)
