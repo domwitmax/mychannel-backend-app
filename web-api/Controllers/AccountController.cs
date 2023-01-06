@@ -2,6 +2,7 @@
 using Application.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Application.Interfaces.Services;
+using System.Security.Claims;
 
 namespace Web_api.Controllers
 {
@@ -22,6 +23,8 @@ namespace Web_api.Controllers
             string? jwt = _accountService.Login(loginDto);
             if (jwt == null)
                 return BadRequest();
+            jwt = jwt.Insert(0, "\"");
+            jwt = jwt + "\"";
             return Ok(jwt);
         }
         [HttpPost("Register")]
@@ -32,6 +35,8 @@ namespace Web_api.Controllers
             string? jwt = _accountService.Register(registerDto);
             if (jwt == null)
                 BadRequest();
+            jwt = jwt.Insert(0, "\"");
+            jwt = jwt + "\"";
             return Ok(jwt);
         }
         [HttpGet("GetUser/{userName}")]
@@ -39,14 +44,29 @@ namespace Web_api.Controllers
         [ProducesResponseType(typeof(GetUserDto),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetUser(string userName)
+        public IActionResult GetUser([FromRoute] string userName)
         {
             GetUserDto? userDto = _accountService.GetUser(userName);
             if(userDto == null)
                 return NotFound();
             return Ok(userDto);
         }
-        [HttpPatch("Update")]
+        [HttpGet("GetActualUser")]
+        [Authorize]
+        [ProducesResponseType(typeof(GetUserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetActualUser()
+        {
+            string? userStr = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            if (userStr == null)
+                return Unauthorized();
+            GetUserDto? userDto = _accountService.GetUser(userStr);
+            if (userDto == null)
+                return NotFound();
+            return Ok(userDto);
+        }
+        [HttpPut("Update")]
         [Authorize]
         [ProducesResponseType(typeof(UpdateDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

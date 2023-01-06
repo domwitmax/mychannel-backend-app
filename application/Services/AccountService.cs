@@ -17,15 +17,13 @@ namespace Application.Services
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IAccountRepository _accountRepository;
         private readonly IFileRepository _fileRepository;
-        private readonly ISettingRepository _settingRepository;
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
-        public AccountService(AuthenticationSettings authenticationSettings, ISettingRepository settingRepository, IFileRepository fileRepository, IAccountRepository accountRepository, IMapper mapper, IPasswordHasher<User> passwordHasher)
+        public AccountService(AuthenticationSettings authenticationSettings, IFileRepository fileRepository, IAccountRepository accountRepository, IMapper mapper, IPasswordHasher<User> passwordHasher)
         {
             _authenticationSettings = authenticationSettings;
             _accountRepository = accountRepository;
             _fileRepository = fileRepository;
-            _settingRepository = settingRepository;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
         }
@@ -68,9 +66,6 @@ namespace Application.Services
             newUser.PasswordHash = passwordHash;
             _accountRepository.AddUser(newUser);
             _fileRepository.AddNewFolder(newUser.UserName);
-            Setting setting = new Setting();
-            setting.UserId = newUser.UserId;
-            _settingRepository.AddSetting(setting);
             return generateJwt(newUser);
         }
 

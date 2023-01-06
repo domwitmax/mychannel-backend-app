@@ -57,8 +57,12 @@ namespace Minimal_api.Requests
                 return null;
             return userId;
         }
-        public static IResult AddVideo([FromServices] IVideoService videoService, [FromBody] VideoDto videoDto)
+        public static IResult AddVideo([FromServices] IVideoService videoService, [FromBody] VideoDto videoDto, ClaimsPrincipal user)
         {
+            int? userId = getUserId(user);
+            if (userId == null)
+                return Results.Unauthorized();
+            videoDto.AuthorId = (int)userId;
             int? result = videoService.AddVideo(videoDto);
             if(result == null)
                 return Results.BadRequest();
@@ -133,7 +137,6 @@ namespace Minimal_api.Requests
             FullVideoDto? fullVideoDto = videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return Results.NotFound();
-            rankingService.AddView(videoId, userId);
             return Results.Ok(fullVideoDto);
         }
         public static IResult GetAllUserVideo(ClaimsPrincipal user, [FromServices] IVideoService videoService, [FromRoute] string userName)

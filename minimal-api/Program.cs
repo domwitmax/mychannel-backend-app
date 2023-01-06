@@ -87,9 +87,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IGetVideoRepository, GetVideoRepository>();
-builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
 builder.Services.AddScoped<IRankingRepository, RankingRepository>();
-builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 #endregion
@@ -98,9 +96,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IGetVideoService, GetVideoService>();
-builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IRankingService, RankingService>();
-builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<IVideoService, VideoService>();
 #endregion
@@ -139,9 +135,7 @@ app.UseAuthorization();
 #region Register
 app.RegisterAccountEndpoints();
 app.RegisterCommentEndpoints();
-app.RegisterHistoryEndpoints();
 app.RegisterRankingEndpoints();
-app.RegisterSettingEndpoints();
 app.RegisterSubscriptionEndpoints();
 app.RegisterVideoEndpoints();
 #endregion

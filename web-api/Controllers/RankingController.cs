@@ -94,7 +94,7 @@ namespace Web_api.Controllers
             return Ok(_getVideoService.Search(searchKey, userId));
         }
         [HttpGet("IsLiked/{videoId}")]
-        [ProducesResponseType(typeof(bool?),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult IsLiked([FromRoute] int videoId)
         {
@@ -102,7 +102,24 @@ namespace Web_api.Controllers
             if (userId == null)
                 return Unauthorized();
             bool? isLiked = _rankingService.IsLiked(videoId, userId.Value);
-            return Ok(isLiked);
+            if (isLiked == null)
+                return Ok(0);
+            if (isLiked == true)
+                return Ok(1);
+            else
+                return Ok(-1);
+        }
+        [HttpPost("AddView/{videoId}")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AddView([FromRoute] int videoId)
+        {
+            int? userId = getUserId();
+            bool view = _rankingService.AddView(videoId, userId);
+            if (!view)
+                return BadRequest();
+            return Ok();
         }
     }
 }

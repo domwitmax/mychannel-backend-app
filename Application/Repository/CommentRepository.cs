@@ -26,7 +26,7 @@ namespace Application.Repository
         }
         public IEnumerable<Comment> GetComments(int videoId)
         {
-            return _channelDbContext.Comments.Where(c => c.VideoId == videoId);
+            return _channelDbContext.Comments.Where(c => c.VideoId == videoId).OrderByDescending(com => com.Created);
         }
     }
 }

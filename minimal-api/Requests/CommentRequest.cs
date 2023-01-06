@@ -1,6 +1,8 @@
-﻿using Application.Interfaces.Services;
+﻿using Application.Data.Entities;
+using Application.Interfaces.Services;
 using Application.Models.Comment;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Minimal_api.Requests
 {
@@ -20,13 +22,24 @@ namespace Minimal_api.Requests
 
             return app;
         }
+        private static int? getUserId(ClaimsPrincipal user)
+        {
+            string? userIdStr = user.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
+                return null;
+            return userId;
+        }
         public static IResult GetComments([FromServices] ICommentService commentService, [FromRoute] int videoId)
         {
             IEnumerable<CommentDto> comments = commentService.GetComments(videoId);
             return Results.Ok(comments);
         }
-        public static IResult AddComment([FromServices] ICommentService commentService, [FromRoute] int videoId, [FromBody] CreatedCommentDto commentDto)
+        public static IResult AddComment([FromServices] ICommentService commentService, [FromRoute] int videoId, [FromBody] CreatedCommentDto commentDto, ClaimsPrincipal user)
         {
+            int? userId = getUserId(user);
+            if (userId == null)
+                return Results.Unauthorized();
+            commentDto.UserId = userId.Value;
             bool result = commentService.AddComment(videoId, commentDto);
             if (result)
                 return Results.NoContent();

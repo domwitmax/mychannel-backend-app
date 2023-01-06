@@ -33,6 +33,10 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult AddVideo([FromBody] VideoDto videoDto)
         {
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            videoDto.AuthorId = (int)userId;
             int? result = _videoService.AddVideo(videoDto);
             if(result == null)
                 return BadRequest();
@@ -112,7 +116,6 @@ namespace Web_api.Controllers
             FullVideoDto? fullVideoDto = _videoService.GetVideo(videoId, userId);
             if (fullVideoDto == null)
                 return NotFound();
-            _rankingService.AddView(videoId, userId);
             return Ok(fullVideoDto);
         }
         [HttpGet("GetAllUserVideo/{userName}")]

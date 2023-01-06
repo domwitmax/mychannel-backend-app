@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Models.Account;
 using Application.Interfaces.Services;
+using Application.Data.Entities;
+using Application.Services;
+using System.Security.Claims;
 
 namespace Minimal_api.Requests
 {
@@ -10,13 +13,19 @@ namespace Minimal_api.Requests
         {
             app.MapPost("api/Account/Login", Login)
                 .Produces<string>(StatusCodes.Status200OK)
-                .WithTags("Account")
-                .Produces(StatusCodes.Status400BadRequest);
+                .Produces(StatusCodes.Status400BadRequest)
+                .WithTags("Account");
             app.MapPost("api/Account/Register", Register)
                 .Produces<string>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .WithTags("Account");
             app.MapPost("api/Account/GetUser/{userName}", GetUser)
+                .Produces<GetUserDto>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized)
+                .Produces(StatusCodes.Status404NotFound)
+                .WithTags("Account")
+                .RequireAuthorization();
+            app.MapGet("api/Account/GetActualUser", GetActualUser)
                 .Produces<GetUserDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status404NotFound)
@@ -49,6 +58,16 @@ namespace Minimal_api.Requests
         {
             GetUserDto? userDto = accountService.GetUser(userName);
             if(userDto == null)
+                return Results.NotFound();
+            return Results.Ok(userDto);
+        }
+        public static IResult GetActualUser([FromServices] IAccountService accountService, ClaimsPrincipal user)
+        {
+            string? userStr = user.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            if (userStr == null)
+                return Results.Unauthorized();
+            GetUserDto? userDto = accountService.GetUser(userStr);
+            if (userDto == null)
                 return Results.NotFound();
             return Results.Ok(userDto);
         }

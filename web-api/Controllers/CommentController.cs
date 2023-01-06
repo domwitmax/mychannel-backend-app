@@ -2,6 +2,7 @@
 using Application.Models.Comment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Web_api.Controllers
 {
@@ -14,6 +15,13 @@ namespace Web_api.Controllers
         public CommentController(ICommentService commentService)
         {
             _commentService = commentService;
+        }
+        private int? getUserId()
+        {
+            string? userIdStr = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
+                return null;
+            return userId;
         }
         [HttpGet("{videoId}")]
         [AllowAnonymous]
@@ -29,6 +37,10 @@ namespace Web_api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult AddComment([FromRoute] int videoId, [FromBody] CreatedCommentDto commentDto)
         {
+            int? userId = getUserId();
+            if (userId == null)
+                return Unauthorized();
+            commentDto.UserId = userId.Value;
             bool result = _commentService.AddComment(videoId, commentDto);
             if (result)
                 return NoContent();
